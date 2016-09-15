@@ -13,20 +13,20 @@ import UIKit
 @objc public protocol SessionAuthorizationDelegate: class {
     
     /** It can be useful if one needs 1password integration. */
-    optional func sessionWillPresentAuthorizationViewController(controller: AuthorizationViewController)
+    @objc optional func sessionWillPresentAuthorizationViewController(_ controller: AuthorizationViewController)
     
-    optional func sessionWillDismissAuthorizationViewController(controller: AuthorizationViewController)
+    @objc optional func sessionWillDismissAuthorizationViewController(_ controller: AuthorizationViewController)
 }
 
 extension Session {
     
     public func canUseNativeOAuth() -> Bool {
         let baseURL = self.configuration.server.nativeOauthBaseURL
-        let URL = NSURL(string: baseURL) as NSURL!
-        return UIApplication.sharedApplication().canOpenURL(URL)
+        let URL = Foundation.URL(string: baseURL) as Foundation.URL!
+        return UIApplication.shared.canOpenURL(URL!)
     }
     
-    public func handleURL(URL: NSURL) -> Bool {
+    public func handleURL(_ URL: Foundation.URL) -> Bool {
         if let nativeAuthorizer = self.authorizer as? NativeTouchAuthorizer {
            return nativeAuthorizer.handleURL(URL) as Bool!
         }
@@ -34,8 +34,8 @@ extension Session {
         return nativeAuthorizer.handleURL(URL) as Bool!
     }
     
-    public func authorizeWithViewController(viewController: UIViewController,
-        delegate: SessionAuthorizationDelegate?, completionHandler: AuthorizationHandler) {
+    public func authorizeWithViewController(_ viewController: UIViewController,
+        delegate: SessionAuthorizationDelegate?, completionHandler: @escaping AuthorizationHandler) {
             
         if self.authorizer == nil {
             let block = {
